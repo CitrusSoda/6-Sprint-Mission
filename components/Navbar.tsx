@@ -12,7 +12,11 @@ export default function Navbar() {
         <ul className="flex items-center">
           <li>
             <Link href="/" className="flex items-center">
-              <Image src={pandaLogo} alt="nav logo" />
+              <Image
+                src={pandaLogo}
+                alt="nav logo"
+                className="hidden sm:block"
+              />
               <span className="text-2xl font-bold text-[color:var(--btn-blue1)] sm:ml-1">
                 판다마켓
               </span>

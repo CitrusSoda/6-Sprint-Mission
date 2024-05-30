@@ -33,18 +33,21 @@ export default function Board() {
           <input
             type="text"
             placeholder="검색할 상품을 입력해주세요"
-            className="bg-[--cool-gray50] w-full"
+            className="bg-[--cool-gray50] w-full py-2 pl-11"
           />
-          <button className="w-40 border relative" onClick={toggleDropdown}>
+          <div
+            className="w-40 border relative cursor-pointer flex justify-center items-center"
+            onClick={toggleDropdown}
+          >
             {boardOrder === 'recent' ? '최신순' : '좋아요순'}
             {isOpen && (
-              <div className="border absolute flex flex-col top-8 w-full z-50 bg-white">
+              <div className="border absolute flex flex-col top-10 w-full z-50 bg-white">
                 <button onClick={() => setBoardOrder('recent')}>최신순</button>
                 <hr />
                 <button onClick={() => setBoardOrder('like')}>좋아요순</button>
               </div>
             )}
-          </button>
+          </div>
         </div>
       </div>
       <div className="mt-6">
@@ -52,25 +55,29 @@ export default function Board() {
           {board?.map((board) => {
             return (
               <li key={board.id}>
-                <div className="flex justify-between">
-                  <h1>{board.title}</h1>
-                  {board.image && (
-                    <div className="border rounded-lg">
-                      <Image
-                        src={board.image}
-                        alt={board.title}
-                        width={72}
-                        height={72}
-                      />
-                    </div>
-                  )}
-                </div>
-                <div className="flex justify-between">
-                  <div className="flex">
-                    <p>{board.writer.nickname}</p>
-                    <p>{formatDate(board.createdAt)}</p>
+                <div className="h-40 flex justify-between flex-col py-6">
+                  <div className="flex justify-between">
+                    <h1 className="text-xl font-bold">{board.title}</h1>
+                    {board.image && (
+                      <div className="border rounded-lg">
+                        <Image
+                          src={board.image}
+                          alt={board.title}
+                          width={72}
+                          height={72}
+                        />
+                      </div>
+                    )}
                   </div>
-                  <p>{board.likeCount}</p>
+                  <div className="flex justify-between">
+                    <div className="flex gap-x-2">
+                      <p>{board.writer.nickname}</p>
+                      <p className="text-[--cool-gray400]">
+                        {formatDate(board.createdAt)}
+                      </p>
+                    </div>
+                    <p>{board.likeCount}</p>
+                  </div>
                 </div>
                 <hr />
               </li>
