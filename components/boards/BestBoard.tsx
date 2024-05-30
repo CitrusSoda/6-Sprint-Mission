@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from '@/lib/axios';
 import Image from 'next/image';
-import { Board } from '@/types/board';
+import { BoardList } from '@/types/board';
 import { formatDate } from '@/utils/formatDate';
 import badge from '@/public/img_badge.png';
 import { useMediaQuery } from 'react-responsive';
@@ -13,7 +13,7 @@ const sizeValue = {
 };
 
 export default function BestBoard() {
-  const [bestBoard, setBestBoard] = useState<Board[] | null>(null);
+  const [bestBoard, setBestBoard] = useState<BoardList[] | null>(null);
 
   const isLargeScreen = useMediaQuery({ minWidth: 1024 });
   const isMediumScreen = useMediaQuery({ minWidth: 768, maxWidth: 1023 });
@@ -32,14 +32,14 @@ export default function BestBoard() {
   }
 
   useEffect(() => {
-    loadBoard();
-  }, [value]);
+    const loadBestBoard = async () => {
+      const res = await axios.get(`/articles?pageSize=${value}&orderBy=like`);
+      const boards = res.data.list ?? [];
+      setBestBoard(boards);
+    };
 
-  async function loadBoard() {
-    const res = await axios.get(`/articles?pageSize=${value}&orderBy=like`);
-    const boards = res.data.list ?? [];
-    setBestBoard(boards);
-  }
+    loadBestBoard();
+  }, [value]);
 
   return (
     <div className="mt-4 sm:mt-6 relative">
@@ -47,7 +47,7 @@ export default function BestBoard() {
         {bestBoard?.map((board) => (
           <li
             key={board.id}
-            className="bg-[--cool-gray50] px-6 pb-4 pt-[46px] w-[400px] h-[170px] flex flex-col justify-between"
+            className="bg-[--cool-gray50] px-6 pb-4 pt-[46px] w-[400px] h-[170px] flex flex-col justify-between rounded-lg"
           >
             <Image src={badge} alt="badge" className="absolute top-0" />
             <div className="flex">

@@ -3,7 +3,7 @@ interface Writer {
   nickname: string;
 }
 
-export interface Board {
+export interface BoardList {
   id: number;
   title: string;
   content: string;
