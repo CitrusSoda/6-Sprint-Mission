@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import pandaLogo from '../public/panda_logo.png';
+import pandaLogo from '@/public/panda_logo.png';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 
