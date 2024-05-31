@@ -91,11 +91,11 @@ export default function Board() {
             />
           </div>
           <div
-            className="relative flex w-40 cursor-pointer items-center justify-center rounded-xl border"
+            className="relative flex cursor-pointer items-center justify-center rounded-xl border"
             onClick={toggleDropdown}
           >
             <Image src={sortIcon} alt="sort icon" className="sm:hidden" />
-            <div className="flex w-full items-center justify-between px-5">
+            <div className="hidden w-40 items-center justify-between px-5 sm:flex">
               <p>{boardOrder === 'recent' ? '최신순' : '좋아요순'}</p>
               <Image src={arrowDownIcon} alt="down arrow icon" />
             </div>
@@ -103,7 +103,7 @@ export default function Board() {
             {isOpen && (
               <div
                 ref={dropDownRef}
-                className="absolute top-12 z-50 flex w-full flex-col rounded-xl border bg-white"
+                className="absolute right-0 top-12 z-50 flex w-32 flex-col rounded-xl border bg-white sm:w-full"
               >
                 <button
                   onClick={() => setBoardOrder('recent')}
