@@ -1,6 +1,6 @@
-import Link from 'next/link';
 import pandaLogo from '@/public/panda_logo.png';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 export default function Navbar() {

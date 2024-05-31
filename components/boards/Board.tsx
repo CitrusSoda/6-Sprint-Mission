@@ -1,13 +1,13 @@
 import axios from '@/lib/axios';
+import arrowDownIcon from '@/public/ic_arrow_down.png';
+import heartIcon from '@/public/ic_heart.png';
+import profileIcon from '@/public/ic_profile.png';
+import searchIcon from '@/public/ic_search.png';
+import sortIcon from '@/public/ic_sort.png';
 import { BoardList } from '@/types/board';
 import { formatDate } from '@/utils/formatDate';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
-import searchIcon from '@/public/ic_search.png';
-import heartIcon from '@/public/ic_heart.png';
-import profileIcon from '@/public/ic_profile.png';
-import arrowDownIcon from '@/public/ic_arrow_down.png';
-import sortIcon from '@/public/ic_sort.png';
 
 export default function Board() {
   // 화면 클릭 시 드롭다운 닫기를 위한 ref
@@ -63,7 +63,7 @@ export default function Board() {
 
   // 검색으로 필터링된 게시글
   const searchedBoard = board?.filter((board) =>
-    board.title.toLowerCase().includes(search)
+    board.title.toLowerCase().includes(search),
   );
 
   return (
@@ -71,31 +71,31 @@ export default function Board() {
       <div className="mt-10">
         <div className="flex justify-between">
           <h1 className="text-xl font-bold">게시글</h1>
-          <button className="py-3 px-6 bg-[--btn-blue1] text-white rounded-lg">
+          <button className="rounded-lg bg-[--btn-blue1] px-6 py-3 text-white">
             글쓰기
           </button>
         </div>
-        <div className="flex justify-between mt-4 md:mt-6 gap-x-4 h-[42px]">
+        <div className="mt-4 flex h-[42px] justify-between gap-x-4 md:mt-6">
           <div className="relative flex-1">
             <input
               type="text"
               placeholder="검색할 상품을 입력해주세요"
-              className="bg-[--cool-gray50] py-2 pl-11 h-full w-full rounded-xl"
+              className="h-full w-full rounded-xl bg-[--cool-gray50] py-2 pl-11"
               value={search}
               onChange={handleChange}
             />
             <Image
               src={searchIcon}
               alt="search icon"
-              className="absolute top-1/2 transform -translate-y-1/2 left-4"
+              className="absolute left-4 top-1/2 -translate-y-1/2 transform"
             />
           </div>
           <div
-            className="w-40 border relative cursor-pointer flex justify-center items-center rounded-xl"
+            className="relative flex w-40 cursor-pointer items-center justify-center rounded-xl border"
             onClick={toggleDropdown}
           >
             <Image src={sortIcon} alt="sort icon" className="sm:hidden" />
-            <div className="justify-between items-center w-full px-5 flex">
+            <div className="flex w-full items-center justify-between px-5">
               <p>{boardOrder === 'recent' ? '최신순' : '좋아요순'}</p>
               <Image src={arrowDownIcon} alt="down arrow icon" />
             </div>
@@ -103,7 +103,7 @@ export default function Board() {
             {isOpen && (
               <div
                 ref={dropDownRef}
-                className="border absolute flex flex-col top-12 w-full z-50 bg-white rounded-xl"
+                className="absolute top-12 z-50 flex w-full flex-col rounded-xl border bg-white"
               >
                 <button
                   onClick={() => setBoardOrder('recent')}
@@ -128,11 +128,11 @@ export default function Board() {
           {searchedBoard?.map((board) => {
             return (
               <li key={board.id}>
-                <div className="h-40 flex justify-between flex-col py-6">
+                <div className="flex h-40 flex-col justify-between py-6">
                   <div className="flex justify-between">
                     <h1 className="text-xl font-bold">{board.title}</h1>
                     {board.image && (
-                      <div className="border rounded-lg">
+                      <div className="rounded-lg border">
                         <Image
                           src={board.image}
                           alt={board.title}
@@ -143,7 +143,7 @@ export default function Board() {
                       </div>
                     )}
                   </div>
-                  <div className="flex justify-between items-center">
+                  <div className="flex items-center justify-between">
                     <div className="flex gap-x-2">
                       <Image src={profileIcon} alt="profile icon" />
                       <p>{board.writer.nickname}</p>
