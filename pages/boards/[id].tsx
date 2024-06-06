@@ -2,6 +2,7 @@ import Navbar from '@/components/Navbar';
 import axios from '@/lib/axios';
 import { BoardList, Comment } from '@/types/board';
 import { formatDate } from '@/utils/formatDate';
+import formatTimeDifference from '@/utils/formatTimeDifference';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -125,7 +126,9 @@ export default function BoardDetail({
                 )}
                 <div className="flex flex-col">
                   <p className="text-xs">{comment.writer.nickname}</p>
-                  <p className="text-sm text-[--cool-gray400]">시간 전</p>
+                  <p className="text-sm text-[--cool-gray400]">
+                    {formatTimeDifference(comment.createdAt)}
+                  </p>
                 </div>
               </div>
               <hr className="my-4" />
