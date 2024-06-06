@@ -7,6 +7,7 @@ import sortIcon from '@/public/ic_sort.png';
 import { BoardList } from '@/types/board';
 import { formatDate } from '@/utils/formatDate';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 
 export default function Board() {
@@ -71,9 +72,12 @@ export default function Board() {
       <div className="mt-10">
         <div className="flex justify-between">
           <h1 className="text-xl font-bold">게시글</h1>
-          <button className="rounded-lg bg-[--btn-blue1] px-6 py-3 text-white">
+          <Link
+            href="/addboard"
+            className="rounded-lg bg-[--btn-blue1] px-6 py-3 text-white"
+          >
             글쓰기
-          </button>
+          </Link>
         </div>
         <div className="mt-4 flex h-[42px] justify-between gap-x-4 md:mt-6">
           <div className="relative flex-1">
