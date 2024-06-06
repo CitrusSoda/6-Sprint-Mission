@@ -132,36 +132,38 @@ export default function Board() {
           {searchedBoard?.map((board) => {
             return (
               <li key={board.id}>
-                <div className="flex h-40 flex-col justify-between py-6">
-                  <div className="flex justify-between">
-                    <h1 className="text-xl font-bold">{board.title}</h1>
-                    {board.image && (
-                      <div className="rounded-lg border">
-                        <Image
-                          src={board.image}
-                          alt={board.title}
-                          width={72}
-                          height={72}
-                          className="size-[72px]"
-                        />
+                <Link href={`/boards/${board.id}`}>
+                  <div className="flex h-40 flex-col justify-between py-6">
+                    <div className="flex justify-between">
+                      <h1 className="text-xl font-bold">{board.title}</h1>
+                      {board.image && (
+                        <div className="rounded-lg border">
+                          <Image
+                            src={board.image}
+                            alt={board.title}
+                            width={72}
+                            height={72}
+                            className="size-[72px]"
+                          />
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex gap-x-2">
+                        <Image src={profileIcon} alt="profile icon" />
+                        <p>{board.writer.nickname}</p>
+                        <p className="text-[--cool-gray400]">
+                          {formatDate(board.createdAt)}
+                        </p>
                       </div>
-                    )}
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex gap-x-2">
-                      <Image src={profileIcon} alt="profile icon" />
-                      <p>{board.writer.nickname}</p>
-                      <p className="text-[--cool-gray400]">
-                        {formatDate(board.createdAt)}
-                      </p>
-                    </div>
-                    <div className="flex gap-x-2">
-                      <Image src={heartIcon} alt="heart icon" />
-                      <p>{board.likeCount}</p>
+                      <div className="flex gap-x-2">
+                        <Image src={heartIcon} alt="heart icon" />
+                        <p>{board.likeCount}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <hr />
+                  <hr />
+                </Link>
               </li>
             );
           })}
