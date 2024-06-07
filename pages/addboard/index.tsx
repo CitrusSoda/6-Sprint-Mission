@@ -1,8 +1,16 @@
 import Navbar from '@/components/Navbar';
+import axios from '@/lib/axios';
 import addFileIcon from '@/public/ic_plus.png';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
+
+interface Inputs {
+  title: string;
+  content: string;
+  image?: File;
+}
 
 export default function AddBoard() {
   // react-hook-form을 이용한 유효성 검사 및 사용자를 위한 에러 출력
@@ -12,14 +20,48 @@ export default function AddBoard() {
     watch,
     setValue,
     formState: { errors },
-  } = useForm();
-
+  } = useForm<Inputs>();
+  const router = useRouter();
   // 제목 및 내용이 채워졌는지 확인하는 변수
   const title = watch('title');
   const content = watch('content');
 
-  // * TEST : submit 테스트
-  const onSubmit = handleSubmit((data) => console.log(data));
+  // 게시글 post
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      const config = {
+        headers: { Authorization: `Bearer ${token}` },
+      };
+      const { title, content, image } = data;
+
+      // 이미지 변수
+      let storageImg = null;
+
+      // 이미지가 있으면 storageImg에 보관
+      if (image) {
+        const formData = new FormData();
+        formData.append('image', image);
+        const imgRes = await axios.post(`/images/upload`, formData, config);
+        storageImg = imgRes.data.url;
+      }
+
+      // 이미지가 없을 수도 있으니 있다면 포함하여 전송
+      const articleData = {
+        title,
+        content,
+        ...(storageImg && { image: storageImg }),
+      };
+      const res = await axios.post(`/articles`, articleData, config);
+      if (res.status === 201) {
+        router.push('/boards');
+      } else {
+        console.log('게시글 등록 실패');
+      }
+    } catch (error) {
+      console.error('게시글 등록 중 오류가 발생하였습니다', error);
+    }
+  };
 
   // 이미지 선택 시 보여주기 위한 State 및 로직
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -47,7 +89,7 @@ export default function AddBoard() {
     <>
       <Navbar />
       <div className="mt-4 px-4 lg:mx-auto lg:w-[1200px]">
-        <form onSubmit={onSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex h-[42px] items-center justify-between">
             <h1 className="text-xl font-bold">상품 등록하기</h1>
             <input
@@ -108,7 +150,7 @@ export default function AddBoard() {
                   alt="Preview"
                   width={0}
                   height={0}
-                  className="size-[169px] rounded-xl"
+                  className="size-[169px] rounded-xl lg:size-[282px]"
                 />
               )}
             </div>
