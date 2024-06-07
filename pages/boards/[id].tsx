@@ -31,7 +31,7 @@ export async function getStaticProps({
     props: {
       board,
     },
-    revalidate: 10,
+    revalidate: 60,
   };
 }
 
