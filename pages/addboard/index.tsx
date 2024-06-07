@@ -18,8 +18,6 @@ export default function AddBoard() {
   const title = watch('title');
   const content = watch('content');
 
-  console.log(title, content);
-
   // * TEST : submit 테스트
   const onSubmit = handleSubmit((data) => console.log(data));
 

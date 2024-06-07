@@ -26,7 +26,10 @@ export default function Board() {
   // dropdown 순서를 다루기 위한 ueseffect
   useEffect(() => {
     const loadBoard = async () => {
-      const res = await axios.get(`/articles?orderBy=${boardOrder}`);
+      // TODO 무한스크롤 or 페이지네이션 적용할 것
+      const res = await axios.get(
+        `/articles?orderBy=${boardOrder}&pageSize=10000`,
+      );
       const boards = res.data.list ?? [];
       setBoard(boards);
     };

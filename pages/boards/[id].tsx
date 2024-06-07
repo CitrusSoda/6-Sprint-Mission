@@ -5,6 +5,13 @@ import { formatDate } from '@/utils/formatDate';
 import formatTimeDifference from '@/utils/formatTimeDifference';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+
+interface CommentFormInput {
+  content: string;
+}
 
 // ISR 적용
 export async function getStaticProps({
@@ -20,15 +27,9 @@ export async function getStaticProps({
   const BoardRes = await axios.get(`/articles/${id}`);
   const board = BoardRes.data;
 
-  // 댓글 데이터
-  // TODO : 추후 limit 수정할 것, 댓글이 ISR이 아닌 CSR로 무한 스크롤로 구현? or 페이지네이션?
-  const commentRes = await axios.get(`/articles/${id}/comments?limit=10000`);
-  const comments = commentRes.data.list;
-
   return {
     props: {
       board,
-      comments,
     },
     revalidate: 10,
   };
@@ -45,13 +46,54 @@ export async function getStaticPaths() {
   return { paths, fallback: 'blocking' };
 }
 
-export default function BoardDetail({
-  board,
-  comments,
-}: {
-  board: BoardList;
-  comments: Comment[];
-}) {
+export default function BoardDetail({ board }: { board: BoardList }) {
+  const { register, handleSubmit, watch } = useForm<CommentFormInput>();
+
+  const router = useRouter();
+
+  const [comments, setComments] = useState<Comment[] | null>(null);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    // 댓글 데이터
+    // TODO : 추후 limit 수정할 것, 댓글이 ISR이 아닌 CSR로 무한 스크롤로 구현? or 페이지네이션?
+    const commentRes = await axios.get(
+      `/articles/${router.query.id}/comments?limit=10000`,
+    );
+    const comments = commentRes.data.list;
+    setComments(comments);
+  };
+
+  // 댓글 유무 확인 변수
+  const commentContent = watch('content');
+
+  // 댓글 등록
+  const onSubmit: SubmitHandler<CommentFormInput> = async (data) => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      let config = {
+        headers: { Authorization: `Bearer ${token}` },
+      };
+
+      const res = await axios.post(
+        `/articles/${router.query.id}/comments`,
+        data,
+        config,
+      );
+
+      if (res.status === 201) {
+        fetchData();
+      } else {
+        console.log('댓글 등록 실패');
+      }
+    } catch (error) {
+      console.error('댓글 등록 중 오류가 발생하였습니다', error);
+    }
+  };
+
   return (
     <>
       <Navbar />
@@ -86,17 +128,23 @@ export default function BoardDetail({
         <div>
           <p>{board.content}</p>
         </div>
-        <div className="mt-10 flex flex-col">
-          <h1 className="font-semibold">댓글 달기</h1>
-          <textarea
-            placeholder="댓글을 입력해주세요."
-            className="my-4 h-[104px] resize-none overflow-hidden rounded-xl bg-[--cool-gray100] px-6 py-4"
-          />
-          <button className="ml-auto rounded-lg bg-[--cool-gray400] px-6 py-3 text-white">
-            등록
-          </button>
+        <div className="mt-10">
+          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
+            <h1 className="font-semibold">댓글 달기</h1>
+            <textarea
+              {...register('content')}
+              placeholder="댓글을 입력해주세요."
+              className="my-4 h-[104px] resize-none overflow-hidden rounded-xl bg-[--cool-gray100] px-6 py-4"
+            />
+            <input
+              type="submit"
+              value="등록"
+              className={`ml-auto rounded-lg px-6 py-3 text-white ${commentContent ? 'cursor-pointer bg-blue-500' : 'bg-[--cool-gray400]'}`}
+              disabled={!commentContent}
+            />
+          </form>
         </div>
-        {comments.map((comment) => {
+        {comments?.map((comment) => {
           return (
             <div className="mt-4" key={comment.id}>
               <div className="flex justify-between">
