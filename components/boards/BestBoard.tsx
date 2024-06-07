@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 
 // TODO: 반응형 디자인을 위한 객체, 자주 쓰이면 constants 폴더로 이동할 예정
-const sizeValue = {
+const responsiveSizeValue = {
   largeScreen: 3,
   mediumScreen: 2,
   smallScreen: 1,
@@ -22,28 +22,30 @@ export default function BestBoard() {
   const isMediumScreen = useMediaQuery({ minWidth: 768, maxWidth: 1023 });
   const isSmallScreen = useMediaQuery({ maxWidth: 767 });
 
-  let value: number;
+  let itemsPerRow: number;
 
   if (isLargeScreen) {
-    value = sizeValue.largeScreen;
+    itemsPerRow = responsiveSizeValue.largeScreen;
   } else if (isMediumScreen) {
-    value = sizeValue.mediumScreen;
+    itemsPerRow = responsiveSizeValue.mediumScreen;
   } else if (isSmallScreen) {
-    value = sizeValue.smallScreen;
+    itemsPerRow = responsiveSizeValue.smallScreen;
   } else {
-    value = sizeValue.mediumScreen;
+    itemsPerRow = responsiveSizeValue.mediumScreen;
   }
 
   // 화면 크기에 따른 개수 변경
   useEffect(() => {
     const loadBestBoard = async () => {
-      const res = await axios.get(`/articles?pageSize=${value}&orderBy=like`);
+      const res = await axios.get(
+        `/articles?pageSize=${itemsPerRow}&orderBy=like`,
+      );
       const boards = res.data.list ?? [];
       setBestBoard(boards);
     };
 
     loadBestBoard();
-  }, [value]);
+  }, [itemsPerRow]);
 
   return (
     <>
