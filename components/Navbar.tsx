@@ -51,9 +51,12 @@ export default function Navbar() {
             </Link>
           </li>
         </ul>
-        <button className="rounded-lg bg-[var(--btn-blue1)] px-6 py-3 text-white">
+        <Link
+          href="/signin"
+          className="rounded-lg bg-[var(--btn-blue1)] px-6 py-3 text-white"
+        >
           로그인
-        </button>
+        </Link>
       </div>
     </nav>
   );

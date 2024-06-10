@@ -1,6 +1,7 @@
 interface Writer {
   id: number;
   nickname: string;
+  image?: string;
 }
 
 export interface BoardList {
@@ -12,4 +13,12 @@ export interface BoardList {
   createdAt: string;
   updatedAt: string;
   writer: Writer;
+}
+
+export interface Comment {
+  writer: Writer;
+  createdAt: string;
+  updatedAt: string;
+  content: string;
+  id: number;
 }
