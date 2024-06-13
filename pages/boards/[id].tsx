@@ -24,8 +24,8 @@ export async function getStaticProps({
   const { id } = params;
 
   // 게시글 데이터
-  const BoardRes = await axios.get(`/articles/${id}`);
-  const board = BoardRes.data;
+  const boardRes = await axios.get(`/articles/${id}`);
+  const board = boardRes.data;
 
   return {
     props: {
