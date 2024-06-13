@@ -22,6 +22,13 @@ export default function SignUp() {
   } = useForm<Inputs>();
   const router = useRouter();
 
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      router.push('/');
+    }
+  }
+
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
       const resData = await signUp(
