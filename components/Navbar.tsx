@@ -2,9 +2,16 @@ import pandaLogo from '@/public/panda_logo.png';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 
 export default function Navbar() {
   const router = useRouter();
+  const [token, setToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem('accessToken');
+    setToken(token);
+  }, []);
 
   return (
     <nav className="border-b bg-white">
@@ -51,12 +58,16 @@ export default function Navbar() {
             </Link>
           </li>
         </ul>
-        <Link
-          href="/signin"
-          className="rounded-lg bg-[var(--btn-blue1)] px-6 py-3 text-white"
-        >
-          로그인
-        </Link>
+        {token ? (
+          <Image src="/ic_profile.png" alt="profile" width={40} height={40} />
+        ) : (
+          <Link
+            href="/signin"
+            className="rounded-lg bg-[var(--btn-blue1)] px-6 py-3 text-white"
+          >
+            로그인
+          </Link>
+        )}
       </div>
     </nav>
   );

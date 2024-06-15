@@ -7,20 +7,15 @@ interface DropdownContextProps {
   toggleDropdown: () => void;
 }
 
-interface DropdownProps {
-  children: React.ReactNode;
-}
-
-interface DropdownItemProps {
-  children: React.ReactNode;
-  onClick: () => void;
-}
-
 const DropdownContext = createContext<DropdownContextProps>({
   isOpen: false,
   closeDropdown: () => {},
   toggleDropdown: () => {},
 });
+
+interface DropdownProps {
+  children: React.ReactNode;
+}
 
 export const Dropdown: React.FC<DropdownProps> = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -104,6 +99,11 @@ export const DropdownMenu: React.FC<DropdownProps> = ({ children }) => {
     </div>
   ) : null;
 };
+
+interface DropdownItemProps {
+  children: React.ReactNode;
+  onClick: () => void;
+}
 
 export const DropdownItem: React.FC<DropdownItemProps> = ({
   children,

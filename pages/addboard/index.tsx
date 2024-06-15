@@ -6,6 +6,8 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
+import { uploadArticle, uploadImage } from '../api/article';
+
 interface Inputs {
   title: string;
   content: string;
@@ -40,10 +42,8 @@ export default function AddBoard() {
 
       // 이미지가 있으면 storageImg에 보관
       if (image) {
-        const formData = new FormData();
-        formData.append('image', image);
-        const imgRes = await axios.post(`/images/upload`, formData, config);
-        storageImg = imgRes.data.url;
+        const imgRes = await uploadImage(image, config);
+        storageImg = imgRes.url;
       }
 
       // 이미지가 없을 수도 있으니 있다면 포함하여 전송
@@ -52,12 +52,9 @@ export default function AddBoard() {
         content,
         ...(storageImg && { image: storageImg }),
       };
-      const res = await axios.post(`/articles`, articleData, config);
-      if (res.status === 201) {
-        router.push('/boards');
-      } else {
-        console.log('게시글 등록 실패');
-      }
+      await uploadArticle(articleData, config);
+
+      router.push('/boards');
     } catch (error) {
       console.error('게시글 등록 중 오류가 발생하였습니다', error);
     }

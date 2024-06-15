@@ -1,12 +1,13 @@
-import axios from '@/lib/axios';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
+import { signIn } from '../api/auth';
+
 interface Inputs {
   email: string;
-  password: number;
+  password: string;
 }
 
 export default function SignIn() {
@@ -17,15 +18,18 @@ export default function SignIn() {
   } = useForm<Inputs>();
   const router = useRouter();
 
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      router.push('/');
+    }
+  }
+
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
-      const res = await axios.post('/auth/signIn', data);
-      if (res.status === 200) {
-        localStorage.setItem('accessToken', res.data.accessToken);
-        router.push('/');
-      } else {
-        console.log('로그인 실패');
-      }
+      const resData = await signIn(data.email, data.password);
+      localStorage.setItem('accessToken', resData.accessToken);
+      router.push('/');
     } catch (error) {
       console.error('로그인 중 오류가 발생하였습니다', error);
     }

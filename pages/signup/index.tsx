@@ -4,11 +4,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
+import { signUp } from '../api/auth';
+
 interface Inputs {
   email: string;
   nickname: string;
-  password: number;
-  passwordConfirmation: number;
+  password: string;
+  passwordConfirmation: string;
 }
 
 export default function SignUp() {
@@ -20,15 +22,23 @@ export default function SignUp() {
   } = useForm<Inputs>();
   const router = useRouter();
 
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      router.push('/');
+    }
+  }
+
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
-      const res = await axios.post('/auth/signUp', data);
-      if (res.status === 201) {
-        localStorage.setItem('accessToken', res.data.accessToken);
-        router.push('/');
-      } else {
-        console.log('회원가입 실패');
-      }
+      const resData = await signUp(
+        data.email,
+        data.nickname,
+        data.password,
+        data.passwordConfirmation,
+      );
+      localStorage.setItem('accessToken', resData.accessToken);
+      router.push('/');
     } catch (error) {
       console.error('회원가입 중 오류가 발생하였습니다', error);
     }
