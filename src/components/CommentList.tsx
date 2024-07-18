@@ -63,7 +63,6 @@ export default function CommentList({ productId }: { productId: number }) {
 
   const handleDelete = (commentId: number) => {
     deleteComment.mutate(commentId);
-    setIsEdit(false);
   };
 
   if (isLoading) {

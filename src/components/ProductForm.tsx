@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useMutation, useQueryClient } from 'react-query';
+import { useNavigate } from 'react-router-dom';
 
 import axiosInstance from '../api/apiClient';
 import { closeTagIcon, deletePreviewImageIcon } from '../images';
@@ -15,6 +16,9 @@ const formErrorMessage = {
 
 export default function ProductForm() {
   const queryClient = useQueryClient();
+  // 폼 완료 후 페이지 이동
+  const navigate = useNavigate();
+
   // 태그에 관한 state입니다.
   const [tagState, setTagState] = useState<{
     tags: string[];
@@ -103,6 +107,7 @@ export default function ProductForm() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries('products');
+      navigate('/items');
     },
   });
 
