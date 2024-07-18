@@ -12,7 +12,7 @@ const refreshAccessToken = async () => {
   const refreshToken = localStorage.getItem('refreshToken');
   try {
     const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/refresh-token`,
+      `${process.env.REACT_APP_API_URL}/auth/refresh-token`,
       { refreshToken },
     );
     const { accessToken } = response.data;

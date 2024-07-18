@@ -23,5 +23,5 @@ export default function useFetchComments(paramsOptions: {
     return response.data;
   };
 
-  return useQuery<any, AxiosError>(['products', limit], fetchItems);
+  return useQuery<any, AxiosError>(['comments', productId, limit], fetchItems);
 }
