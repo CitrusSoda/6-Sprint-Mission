@@ -1,8 +1,13 @@
+import { useEffect, useState } from 'react';
+import { useMutation, useQueryClient } from 'react-query';
+
+import axiosInstance from '../api/apiClient';
 import useFetchComments from '../api/useFetchComments';
 import { emptyCommentImage } from '../images';
 import formatDateDiff from '../utils/formatDateDiff';
 
 export default function CommentList({ productId }: { productId: number }) {
+  const queryClient = useQueryClient();
   // 데이터를 가져오기 위한 옵션입니다.
   const fetchOptions = {
     productId,
@@ -11,6 +16,55 @@ export default function CommentList({ productId }: { productId: number }) {
 
   // useFetchComments로 데이터를 가져옵니다.
   const { data, isLoading, isError, error } = useFetchComments(fetchOptions);
+  // userId state
+  const [userId, setUserId] = useState<number | null>(null);
+  // 댓글 수정 state
+  const [isEdit, setIsEdit] = useState(false);
+  // 수정할 댓글 state
+  const [content, setContent] = useState('');
+
+  // 아이디 확인 로직
+  useEffect(() => {
+    const fetchUserId = async () => {
+      const response = await axiosInstance.get('/users/me');
+      setUserId(response.data.id);
+    };
+    fetchUserId();
+  }, []);
+
+  const updateComment = useMutation({
+    mutationFn: (commentId: number) =>
+      axiosInstance.patch(`/comments/${commentId}`, { content }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['comments'] });
+    },
+  });
+
+  const deleteComment = useMutation({
+    mutationFn: (commentId: number) =>
+      axiosInstance.delete(`/comments/${commentId}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['comments'] });
+    },
+  });
+
+  const handleEdit = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    commentId: number,
+  ) => {
+    if (e.key === 'Enter') {
+      updateComment.mutate(commentId, {
+        onSuccess: () => {
+          setIsEdit(false);
+        },
+      });
+    }
+  };
+
+  const handleDelete = (commentId: number) => {
+    deleteComment.mutate(commentId);
+    setIsEdit(false);
+  };
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -25,7 +79,25 @@ export default function CommentList({ productId }: { productId: number }) {
       return (
         <div key={comment.id}>
           <div className="my-6">
-            {comment.content}
+            <div className="flex justify-between">
+              {isEdit && comment.writer.id === userId ? (
+                <input
+                  type="text"
+                  className="w-full bg-[var(--cool-gray100)]"
+                  onChange={(e) => setContent(e.target.value)}
+                  onKeyDown={(e) => handleEdit(e, comment.id)}
+                  defaultValue={comment.content}
+                />
+              ) : (
+                comment.content
+              )}
+              {comment.writer.id === userId && (
+                <div className="flex gap-x-2">
+                  <button onClick={() => setIsEdit(true)}>수정</button>
+                  <button onClick={() => handleDelete(comment.id)}>삭제</button>
+                </div>
+              )}
+            </div>
             <div className="mt-6 flex gap-x-2">
               <img
                 src={comment.writer.image}

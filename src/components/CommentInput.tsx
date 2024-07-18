@@ -16,7 +16,7 @@ export default function CommentInput({ productId }: { productId: number }) {
     formState: { isValid },
   } = useForm<Inputs>();
 
-  const mutation = useMutation({
+  const mutationComment = useMutation({
     mutationFn: (comment: string) =>
       axiosInstance.post(`/products/${productId}/comments`, {
         content: comment,
@@ -27,7 +27,7 @@ export default function CommentInput({ productId }: { productId: number }) {
   });
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    mutation.mutate(data.comment);
+    mutationComment.mutate(data.comment);
   };
 
   return (
