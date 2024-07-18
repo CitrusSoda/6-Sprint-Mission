@@ -1,7 +1,11 @@
 import { favoriteIcon } from '../images';
 import formatNumber from '../utils/formatNumber';
 
-export default function ItemIntroduction({ postedItems }: {postedItems: any}) {
+export default function ItemIntroduction({
+  postedItems,
+}: {
+  postedItems: any;
+}) {
   return (
     <div className="flex flex-col justify-center sm:flex-row">
       <img
