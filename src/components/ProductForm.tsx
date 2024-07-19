@@ -87,7 +87,6 @@ export default function ProductForm() {
 
   const createProduct = useMutation({
     mutationFn: async (data: any) => {
-      console.log('data', data);
       const response = await axiosInstance.post(
         '/products',
         {
@@ -107,6 +106,13 @@ export default function ProductForm() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries('products');
+      /*
+       * TODO : 쿼리 키 문제로 추정되는데 products는 따로 제품 키 마다 관리가 되지 않고 있어 상세 페이지로 이동이 불가능 하는 것 같다. (페이지 이동은 되나 undefined오류가 뜸.)
+       *        useFetchItems를 리팩토링 후 상세페이지로 이동하는 로직 구현할 것.
+       */
+      // if (resData.id) {
+      //   navigate(`/items/${resData.id}`);
+      // }
       navigate('/items');
     },
   });
